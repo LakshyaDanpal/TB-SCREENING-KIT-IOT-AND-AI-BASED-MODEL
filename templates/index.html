@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - TB Screening Kit{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4 gradient-text animate__animated animate__fadeInDown">
+            Welcome to TB Screening Kit
+        </h1>
+        <p class="lead mb-5 animate__animated animate__fadeIn animate__delay-1s">
+            A smart web-based platform to detect and manage Tuberculosis screening results efficiently and securely.
+        </p>
+        <div class="hero-buttons animate__animated animate__fadeInUp animate__delay-1s">
+            <a href="/register" class="btn btn-primary btn-lg me-3 px-4 py-3">Get Started</a>
+            <a href="/login" class="btn btn-outline-primary btn-lg px-4 py-3">Login</a>
+        </div>
+    </div>
+</div>
+
+<div class="features-section py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-5">
+                <div class="feature-card card h-100 border-0 shadow-lg animate__animated animate__fadeInLeft">
+                    <div class="card-body p-4">
+                        <div class="feature-icon mb-4">
+                            <i class="bi bi-person-lines-fill" style="font-size:50px;color:#0d6efd;"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Patient Registration</h3>
+                        <p class="text-muted">
+                            Register patients securely and maintain complete records of their screening history.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-5">
+                <div class="feature-card card h-100 border-0 shadow-lg animate__animated animate__fadeInUp">
+                    <div class="card-body p-4">
+                        <div class="feature-icon mb-4">
+                            <i class="bi bi-heart-pulse" style="font-size:50px;color:#0d6efd;"></i>
+                        </div>
+                        <h3 class="h4 mb-3">AI-based Screening</h3>
+                        <p class="text-muted">
+                            Analyze patient chest X-rays or data using AI-assisted screening tools for TB detection.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-5">
+                <div class="feature-card card h-100 border-0 shadow-lg animate__animated animate__fadeInRight">
+                    <div class="card-body p-4">
+                        <div class="feature-icon mb-4">
+                            <i class="bi bi-file-medical" style="font-size:50px;color:#0d6efd;"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Result Management</h3>
+                        <p class="text-muted">
+                            View, update, and track patient screening results with secure record keeping and reporting.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 col-6 mb-4">
+                <div class="stat-item">
+                    <h2 class="display-4 fw-bold text-primary">1200+</h2>
+                    <p class="text-muted">Patients Screened</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-6 mb-4">
+                <div class="stat-item">
+                    <h2 class="display-4 fw-bold text-primary">98%</h2>
+                    <p class="text-muted">Accuracy Rate</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-6 mb-4">
+                <div class="stat-item">
+                    <h2 class="display-4 fw-bold text-primary">24/7</h2>
+                    <p class="text-muted">Data Access</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section py-5 text-center">
+    <div class="container">
+        <h2 class="mb-4">Start Screening Today</h2>
+        <p class="lead mb-4">
+            Join healthcare professionals using our intelligent TB Screening Kit for fast, accurate, and secure
+            analysis.
+        </p>
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Simple animation and scroll effects (no blockchain)
+    document.addEventListener('DOMContentLoaded', function () {
+        const featureCards = document.querySelectorAll('.feature-card');
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-15px)';
+                this.style.transition = 'all 0.3s ease';
+            });
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        const statsSection = document.querySelector('.stats-section');
+        const statItems = document.querySelectorAll('.stat-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    statItems.forEach((item, index) => {
+                        setTimeout(() => {
+                            item.classList.add('animate__animated', 'animate__fadeInUp');
+                        }, index * 200);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        observer.observe(statsSection);
+    });
+</script>
+{% endblock %}

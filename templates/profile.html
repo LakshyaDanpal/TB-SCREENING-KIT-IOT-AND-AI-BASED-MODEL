@@ -1,0 +1,554 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - E-Voting{% endblock %}
+
+{% block content %}
+<div class="container profile-container py-5">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+        <div class="profile-avatar mb-3">
+            <i class="fas fa-user-shield"></i>
+        </div>
+        <h1 class="profile-title">My Profile</h1>
+
+    </div>
+
+    {% if user %}
+    <div class="row">
+        <!-- User Information Card -->
+        <div class="col-lg-12 mb-4">
+            <div class="card profile-card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-id-card me-2"></i>
+                        Account Information
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="info-content">
+                            <label>Username</label>
+                            <h5>{{ user['username'] }}</h5>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="info-content">
+                            <label>Email Address</label>
+                            <h5>{{ user['email'] }}</h5>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fab fa-ethereum"></i>
+                        </div>
+                        <div class="info-content">
+                            <label>Ethereum Address</label>
+                            <h5 class="eth-address">{{ user['eth_address'] }}</h5>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-user-tag"></i>
+                        </div>
+                        <div class="info-content">
+                            <label>Role</label>
+                            <span class="role-badge">{{ user['role'] }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Face Images Section -->
+    <div class="card face-images-card">
+        <div class="card-header">
+            <h4 class="mb-0">
+                <i class="fas fa-images me-2"></i>
+                Registered Face Images
+                <span class="badge count-badge">{{ face_images|length }} Images</span>
+            </h4>
+        </div>
+        <div class="card-body">
+            {% if face_images %}
+            <div class="face-grid">
+                {% for img in face_images %}
+                <div class="face-card">
+                    <div class="face-image-container">
+                        <img src="{{ img }}" alt="Face {{ loop.index }}" class="face-image">
+                        <div class="face-overlay">
+                            <span class="face-number">#{{ loop.index }}</span>
+                            <button class="btn btn-sm btn-light view-btn" data-bs-toggle="modal"
+                                data-bs-target="#faceModal{{ loop.index }}">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="face-info">
+                        <small class="text-muted">Captured Image</small>
+                        <div class="verification-badge">
+                            <i class="fas fa-check-circle me-1"></i>
+                            Verified
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal for each image -->
+                <div class="modal fade" id="faceModal{{ loop.index }}" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Face Image #{{ loop.index }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <img src="{{ img }}" alt="Face {{ loop.index }}" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state text-center py-5">
+                <div class="empty-icon mb-3">
+                    <i class="fas fa-user-slash"></i>
+                </div>
+                <h5>No Face Images Registered</h5>
+                <p class="text-muted">You haven't registered any face images yet.</p>
+                <a href="{{ url_for('save_face', username=user['username']) }}" class="btn btn-primary">
+                    <i class="fas fa-camera me-2"></i>
+                    Register Face Now
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Security Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card security-card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Security Information
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="security-item">
+                                <i class="fas fa-fingerprint security-icon biometric"></i>
+                                <div>
+                                    <h6>Biometric Authentication</h6>
+                                    <p class="mb-0">
+                                        {% if face_images %}
+                                        <span class="text-success">Enabled</span> - {{ face_images|length }} images
+                                        registered
+                                        {% else %}
+                                        <span class="text-warning">Not Set Up</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="security-item">
+                                <i class="fab fa-ethereum security-icon blockchain"></i>
+                                <div>
+                                    <h6>Blockchain Identity</h6>
+                                    <p class="mb-0 text-success">Verified on Ethereum Network</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="card error-card text-center py-5">
+        <div class="error-icon mb-3">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3>User Not Found</h3>
+        <p class="text-muted">The requested user profile could not be found.</p>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+            <i class="fas fa-arrow-left me-2"></i>
+            Return to Dashboard
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --secondary: #7209b7;
+        --success: #4cc9f0;
+        --info: #4895ef;
+        --warning: #f72585;
+        --teal: #38b2ac;
+        --purple: #805ad5;
+        --dark: #1e1e2c;
+        --light: #f8f9fa;
+        --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+        --gradient-success: linear-gradient(135deg, var(--success), var(--info));
+        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        backdrop-filter: blur(10px);
+        border: 3px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .profile-avatar i {
+        font-size: 3rem;
+        color: white;
+    }
+
+    .profile-title {
+        color: white;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.1rem;
+    }
+
+    .card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: var(--card-shadow);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--hover-shadow);
+    }
+
+    .profile-card,
+    .stats-card,
+    .face-images-card,
+    .security-card {
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+    .card-header {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        padding: 1.5rem 2rem;
+        border-radius: 20px 20px 0 0 !important;
+        position: relative;
+    }
+
+    .card-header h4 {
+        font-weight: 600;
+    }
+
+    .count-badge {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 0.8rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 50px;
+        margin-left: 0.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        padding: 1.25rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-primary);
+        color: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .info-content label {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+        display: block;
+    }
+
+    .info-content h5 {
+        color: var(--dark);
+        margin-bottom: 0;
+        font-weight: 600;
+    }
+
+    .eth-address {
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        word-break: break-all;
+        color: #666;
+    }
+
+    .role-badge {
+        background: var(--gradient-success);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-item:last-child {
+        border-bottom: none;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1.5rem;
+        flex-shrink: 0;
+        font-size: 1.5rem;
+    }
+
+    .stat-icon.success {
+        background: linear-gradient(135deg, #4cc9f0, #3a86ff);
+        color: white;
+    }
+
+    .stat-icon.primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+    }
+
+    .stat-icon.warning {
+        background: linear-gradient(135deg, #ff9a00, #ff6b00);
+        color: white;
+    }
+
+    .stat-content h3 {
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+        font-weight: 700;
+    }
+
+    .stat-content p {
+        color: #666;
+        margin-bottom: 0;
+    }
+
+    .face-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .face-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .face-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .face-image-container {
+        position: relative;
+        overflow: hidden;
+        background: var(--dark);
+    }
+
+    .face-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .face-card:hover .face-image {
+        transform: scale(1.05);
+    }
+
+    .face-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.7));
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 1rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .face-card:hover .face-overlay {
+        opacity: 1;
+    }
+
+    .face-number {
+        color: white;
+        font-weight: 600;
+    }
+
+    .view-btn {
+        border-radius: 8px;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .face-info {
+        padding: 1rem;
+    }
+
+    .verification-badge {
+        background: rgba(76, 201, 240, 0.1);
+        color: var(--success);
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .empty-state,
+    .error-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+    }
+
+    .empty-icon,
+    .error-icon {
+        font-size: 4rem;
+        color: #ddd;
+    }
+
+    .error-icon {
+        color: #ff6b6b;
+    }
+
+    .security-item {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem;
+        background: rgba(67, 97, 238, 0.05);
+        border-radius: 15px;
+        margin-bottom: 1rem;
+    }
+
+    .security-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .security-icon {
+        font-size: 2rem;
+        margin-right: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .security-icon.biometric {
+        color: var(--primary);
+    }
+
+    .security-icon.blockchain {
+        color: var(--purple);
+    }
+
+    .security-item h6 {
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+    }
+
+    .security-item p {
+        color: #666;
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 768px) {
+        .profile-title {
+            font-size: 2rem;
+        }
+
+        .info-item,
+        .stat-item,
+        .security-item {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .info-icon,
+        .stat-icon {
+            margin-right: 0;
+            margin-bottom: 1rem;
+        }
+
+        .security-icon {
+            margin-right: 0;
+            margin-bottom: 1rem;
+        }
+
+        .face-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+
+{% endblock %}
